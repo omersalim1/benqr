@@ -82,7 +82,11 @@ function qrGoster(id) {
     const modal = document.getElementById('qrModal');
     const qrDiv = document.getElementById('qrcode');
     qrDiv.innerHTML = '';
-    new QRCode(qrDiv, window.location.origin + "/qr.html?id=" + id);
+    
+    // Klasör yapısını netleştirmek için araya /benqr/ ekledik
+    const url = "https://omersalim1.github.io/benqr/qr.html?id=" + id;
+    
+    new QRCode(qrDiv, url);
     modal.classList.remove('hidden');
 }
 
