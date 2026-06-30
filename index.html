@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı QR - Aracınız İçin Yeni Nesil İletişim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="toast.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans selection:bg-blue-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+    <nav class="flex items-center justify-between px-8 py-6 bg-gray-800/50 backdrop-blur-md fixed w-full top-0 z-50 border-b border-gray-700">
+        <div class="text-2xl font-extrabold tracking-wider text-white">
+            <span class="text-blue-500">QR</span>Araç
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="acGirisEkrani()" class="text-gray-300 hover:text-white font-semibold transition">
+                Giriş Yap
+            </button>
+            <button onclick="acKayitEkrani()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold transition-all duration-300 shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                Kayıt Ol
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex flex-col items-center justify-center text-center min-h-screen px-4 pt-20">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+            Aracınız İçin <br/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Akıllı QR Kod</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-400 max-w-2xl mb-12">
+            Hatalı park durumlarında veya acil anlarda kişisel telefon numaranızı camda paylaşmak zorunda kalmayın.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button onclick="acKayitEkrani()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 shadow-lg">
+                Hemen Sistemde Yerini Al
+            </button>
+        </div>
+    </main>
+
+    <div id="girisModali" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center">
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 w-96 relative shadow-2xl">
+            <button onclick="kapatGirisEkrani()" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">Giriş Yap</h2>
+            
+            <form id="loginForm" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">E-posta</label>
+                    <input type="email" id="emailInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="ornek@mail.com" required>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Şifre</label>
+                    <input type="password" id="sifreInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="••••••••" required>
+                </div>
+                <button type="button" onclick="girisKontrol()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mt-2 transition-all">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="kayitModali" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center">
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 w-96 relative shadow-2xl">
+            <button onclick="kapatKayitEkrani()" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">Hesap Oluştur</h2>
+            
+
+            <form id="registerForm" class="flex flex-col gap-4">
+                <div id="registerStatus" class="hidden p-3 rounded-lg text-sm text-center font-medium"></div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Ad Soyad</label>
+                    <input type="text" id="kayitIsim" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="Ahmet Yılmaz" required>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">E-posta</label>
+                    <input type="email" id="kayitEmail" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="ornek@mail.com" required>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Şifre</label>
+                    <input type="password" id="kayitSifre" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="••••••••" required>
+                </div>
+                <button type="button" onclick="kayitOlKontrol()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg mt-2 transition-all">Kayıt Ol</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

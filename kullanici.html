@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Paneli - QR Araç</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="toast.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans flex min-h-screen">
+
+    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+    <aside class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col p-6">
+        <div class="text-2xl font-extrabold tracking-wider text-white mb-10">
+            <span class="text-blue-500">QR</span>Araç
+        </div>
+        <nav class="flex flex-col gap-4">
+            <a href="#" class="bg-blue-600/20 text-blue-500 font-bold px-4 py-3 rounded-lg border border-blue-500/50">Cihazlarım</a>
+            <a href="index.html" class="text-red-400 hover:text-red-300 px-4 py-3 rounded-lg transition mt-auto">Çıkış Yap</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-white">Yeni QR Kod Ekle</h2>
+                <form id="birlesikForm" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">QR Kod ID</label>
+                        <input type="text" id="qrIdInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" placeholder="QR üzerindeki kod" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Ad Soyad</label>
+                        <input type="text" id="surucuIsim" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Telefon</label>
+                        <input type="tel" id="surucuTel" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Araç Plaka</label>
+                        <input type="text" id="aracPlaka" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Acil Not</label>
+                        <textarea id="acilNot" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" rows="2"></textarea>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="numaraGizle" class="w-5 h-5">
+                        <label for="numaraGizle" class="text-sm text-gray-300">Telefon numaramı gizle</label>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold">Kaydet ve Aktifleştir</button>
+                </form>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl h-fit">
+                <h2 class="text-xl font-bold mb-4 text-white">Aktif QR Kodlarım</h2>
+                <div id="aktifQrListesi" class="flex flex-col gap-3">
+                    <p class="text-gray-500 italic">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
+    <div class="bg-gray-800 p-8 rounded-xl w-full max-w-md border border-gray-700">
+        <h2 class="text-xl font-bold text-white mb-6">Bilgileri Düzenle</h2>
+        <form onsubmit="kaydetDuzenleme(event)" class="flex flex-col gap-4">
+            <input type="hidden" id="edit_qrId">
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Sürücü İsim</label>
+                <input type="text" id="edit_surucuIsim" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Telefon</label>
+                <input type="text" id="edit_surucuTel" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Araç Plaka</label>
+                <input type="text" id="edit_aracPlaka" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Acil Not</label>
+                <textarea id="edit_acilNot" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white" rows="2"></textarea>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="edit_numaraGizle" class="w-5 h-5">
+                <label for="edit_numaraGizle" class="text-sm text-gray-300">Telefon numaramı gizle</label>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg font-bold">İptal</button>
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-bold">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script src="kullanici.js"></script>
+</body>
+</html>

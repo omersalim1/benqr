@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        /* Yazdırma ayarları: Sadece modalın yazdırılmasını sağlar */
+        @media print {
+            body * { visibility: hidden; }
+            #qrModal, #qrModal * { visibility: visible; }
+            #qrModal { position: absolute; left: 0; top: 0; width: 100%; background: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex">
+
+    <aside class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col p-6">
+        <div class="text-2xl font-extrabold tracking-wider text-white mb-10">
+            <span class="text-blue-500">QR</span>Admin
+        </div>
+        <nav class="flex flex-col gap-2">
+            <button onclick="sayfaGoster('qr')" id="btnQr" class="text-left bg-blue-600 text-white font-bold px-4 py-3 rounded-lg">QR Yönetimi</button>
+            <button onclick="sayfaGoster('users')" id="btnUsers" class="text-left text-gray-400 hover:text-white px-4 py-3 rounded-lg transition">Kullanıcılar</button>
+            <button onclick="cikisYap()" class="text-left text-red-400 hover:text-red-300 px-4 py-3 rounded-lg transition mt-auto">Çıkış Yap</button>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+        <section id="qrBolumu">
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">QR Kod Yönetimi</h1>
+                <button onclick="yeniQrUret()" class="bg-green-600 hover:bg-green-500 px-6 py-3 rounded-lg font-bold transition">+ Yeni Boş QR Üret</button>
+            </header>
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-700/50">
+                        <tr>
+                            <th class="px-6 py-4">QR ID</th>
+                            <th class="px-6 py-4">Durum</th>
+                            <th class="px-6 py-4">Kime Ait</th>
+                            <th class="px-6 py-4">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qrTablosu" class="divide-y divide-gray-700"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="kullaniciBolumu" class="hidden">
+            <h1 class="text-2xl font-bold mb-8">Kayıtlı Kullanıcılar</h1>
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-700/50">
+                        <tr><th class="px-6 py-4">Ad Soyad</th><th class="px-6 py-4">E-posta</th><th class="px-6 py-4">Rol</th><th class="px-6 py-4">İşlem</th></tr>
+                    </thead>
+                    <tbody id="kullaniciTablosu" class="divide-y divide-gray-700"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="qrModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl flex flex-col items-center">
+            <h2 class="text-black font-bold text-xl mb-4" id="modalQrBaslik">QR Kod</h2>
+            <div id="qrcode" class="mb-6 p-4"></div>
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2 rounded-lg font-bold">Yazdır</button>
+            <button onclick="document.getElementById('qrModal').classList.add('hidden')" class="mt-4 text-gray-500">Kapat</button>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

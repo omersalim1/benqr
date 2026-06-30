@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araç İletişim Kartı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+<body class="bg-gray-950 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl">
+        
+        <div class="text-center mb-6">
+            <span class="text-[10px] uppercase tracking-widest text-gray-500 font-bold" id="qrKodEtiketi">KOD: YÜKLENİYOR...</span>
+        </div>
+
+        <div class="bg-blue-600 rounded-2xl p-4 text-center mb-6 shadow-lg shadow-blue-900/20">
+            <h2 id="aramaPlaka" class="text-4xl font-black text-white tracking-wider">---</h2>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-gray-800/50 rounded-2xl p-4 border border-gray-700">
+                <p class="text-xs text-gray-400 mb-1">Sürücü</p>
+                <p id="isimAlani" class="text-lg font-bold text-white">-</p>
+            </div>
+
+            <div id="iletisimAlani" class="bg-gray-800/50 rounded-2xl p-4 border border-gray-700">
+                <p class="text-xs text-gray-400 mb-1">İletişim</p>
+                <div id="telefonAlani" class="text-lg font-bold text-blue-400">-</div>
+            </div>
+
+            <div class="bg-gray-800/50 rounded-2xl p-4 border border-gray-700">
+                <p class="text-xs text-gray-400 mb-1">Acil Not</p>
+                <p id="notAlani" class="text-sm text-gray-300 italic">-</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="qr.js"></script>
+</body>
+</html>
