@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const qrId = urlParams.get('id');
 
     if (!qrId) {
-        document.body.innerHTML = `<div class=\"text-red-500 p-10 text-center\">Hata: QR Kod bulunamadı!</div>`;
+        document.body.innerHTML = `<div class="text-red-500 p-10 text-center">Hata: QR Kod bulunamadı!</div>`;
         return;
     }
 
@@ -21,11 +21,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // --- YENİ EKLENEN KONTROL: QR HİÇBİR KULLANICIDA DEĞİLSE ANASAYFAYA YÖNLENDİR ---
-        if (!data.is_active || !data.user_id) {
-            // Kullanıcı bu boş kodu tanımlasın diye ana sayfaya yönlendiriyoruz
-            window.location.href = "https://omersalim1.github.io/benqr/index.html";
-            return; // Kodun aşağıya devam etmesini engellemek için fonksiyonu kesiyoruz
+        // --- EN GARANTİ KONTROL: EĞER AKTİF DEĞİLSE, NULL İSE VEYA USER_ID YOKSA ANASAYFAYA AT ---
+        if (data.is_active === false || data.is_active === null || !data.user_id) {
+            console.log("Boş QR tespit edildi, ana sayfaya yönlendiriliyor...");
+            window.location.replace("https://omersalim1.github.io/benqr/index.html");
+            return; // Kodun aşağı doğru devam edip eski kartı basmasını engeller
         }
         // ----------------------------------------------------------------------------
 
