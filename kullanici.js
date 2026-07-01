@@ -185,3 +185,56 @@ async function silQr(qrId) {
         showToast("Hata: " + error.message, "error");
     }
 }
+
+// --- QR KAMERA OKUMA İŞLEMLERİ ---
+
+let html5QrcodeScanner = null;
+
+function kameraAc() {
+    document.getElementById('kameraModal').classList.remove('hidden');
+    
+    // Tarayıcıyı başlat
+    html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", 
+        { fps: 10, qrbox: { width: 250, height: 250 } }, 
+        false
+    );
+    
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    let qrId = decodedText;
+    
+    // Eğer okunan QR kod senin sitenin linkini barındırıyorsa, içindeki id'yi cımbızla al
+    if (decodedText.includes('?id=')) {
+        try {
+            const url = new URL(decodedText);
+            qrId = url.searchParams.get("id");
+        } catch(e) {
+            // URL olarak algılanmazsa manuel parçala
+            qrId = decodedText.split('?id=')[1];
+        }
+    }
+
+    if (qrId) {
+        document.getElementById('qrIdInput').value = qrId.toUpperCase();
+        showToast("QR Kod başarıyla eklendi!", "success");
+        kameraKapat(); // İşlem bitince kamerayı kapat
+    }
+}
+
+function onScanFailure(error) {
+    // Okuma başarısız olduğunda sistem sürekli burayı tetikler, görmezden geliyoruz.
+    // Kullanıcıya sürekli hata göstermemek için boş bırakıldı.
+}
+
+function kameraKapat() {
+    document.getElementById('kameraModal').classList.add('hidden');
+    // Eğer kamera aktifse, kapatıp hafızayı temizle
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear().catch(error => {
+            console.error("Kamera durdurulamadı.", error);
+        });
+    }
+}
