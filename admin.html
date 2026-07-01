@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -17,33 +18,35 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
 
-    <aside class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col p-6">
-        <div class="text-2xl font-extrabold tracking-wider text-white mb-10">
+    <aside class="w-full md:w-64 bg-gray-800 border-b md:border-b-0 md:border-r border-gray-700 flex flex-row md:flex-col justify-between md:justify-start p-4 md:p-6 shrink-0 items-center md:items-stretch">
+        <div class="text-xl md:text-2xl font-extrabold tracking-wider text-white md:mb-10">
             <span class="text-blue-500">QR</span>Admin
         </div>
-        <nav class="flex flex-col gap-2">
-            <button onclick="sayfaGoster('qr')" id="btnQr" class="text-left bg-blue-600 text-white font-bold px-4 py-3 rounded-lg">QR Yönetimi</button>
-            <button onclick="sayfaGoster('users')" id="btnUsers" class="text-left text-gray-400 hover:text-white px-4 py-3 rounded-lg transition">Kullanıcılar</button>
-            <button onclick="cikisYap()" class="text-left text-red-400 hover:text-red-300 px-4 py-3 rounded-lg transition mt-auto">Çıkış Yap</button>
+        <nav class="flex flex-row md:flex-col gap-2 flex-wrap justify-end">
+            <button onclick="sayfaGoster('qr')" id="btnQr" class="text-xs md:text-base text-left bg-blue-600 text-white font-bold px-3 py-2 md:px-4 md:py-3 rounded-lg">QR Yönetimi</button>
+            <button onclick="sayfaGoster('users')" id="btnUsers" class="text-xs md:text-base text-left text-gray-400 hover:text-white px-3 py-2 md:px-4 md:py-3 rounded-lg transition">Kullanıcılar</button>
+            <button onclick="cikisYap()" class="text-xs md:text-base text-left text-red-400 hover:text-red-300 px-3 py-2 md:px-4 md:py-3 rounded-lg transition mt-0 md:mt-auto">Çıkış Yap</button>
         </nav>
     </aside>
 
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-4 md:p-8 overflow-hidden">
+        
         <section id="qrBolumu">
-            <header class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold">QR Kod Yönetimi</h1>
-                <button onclick="yeniQrUret()" class="bg-green-600 hover:bg-green-500 px-6 py-3 rounded-lg font-bold transition">+ Yeni Boş QR Üret</button>
+            <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
+                <h1 class="text-xl md:text-2xl font-bold">QR Kod Yönetimi</h1>
+                <button onclick="yeniQrUret()" class="w-full sm:w-auto bg-green-600 hover:bg-green-500 px-4 py-2.5 md:px-6 md:py-3 rounded-lg font-bold transition text-sm md:text-base">+ Yeni Boş QR Üret</button>
             </header>
-            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-                <table class="w-full text-left">
+            
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-x-auto shadow-xl">
+                <table class="w-full text-left min-w-[600px]">
                     <thead class="bg-gray-700/50">
                         <tr>
-                            <th class="px-6 py-4">QR ID</th>
-                            <th class="px-6 py-4">Durum</th>
-                            <th class="px-6 py-4">Kime Ait</th>
-                            <th class="px-6 py-4">İşlem</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">QR ID</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">Durum</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">Kime Ait</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="qrTablosu" class="divide-y divide-gray-700"></tbody>
@@ -52,11 +55,17 @@
         </section>
 
         <section id="kullaniciBolumu" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Kayıtlı Kullanıcılar</h1>
-            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-                <table class="w-full text-left">
+            <h1 class="text-xl md:text-2xl font-bold mb-6 md:mb-8">Kayıtlı Kullanıcılar</h1>
+            
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-x-auto shadow-xl">
+                <table class="w-full text-left min-w-[600px]">
                     <thead class="bg-gray-700/50">
-                        <tr><th class="px-6 py-4">Ad Soyad</th><th class="px-6 py-4">E-posta</th><th class="px-6 py-4">Rol</th><th class="px-6 py-4">İşlem</th></tr>
+                        <tr>
+                            <th class="px-4 py-3 md:px-6 md:py-4">Ad Soyad</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">E-posta</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">Rol</th>
+                            <th class="px-4 py-3 md:px-6 md:py-4">İşlem</th>
+                        </tr>
                     </thead>
                     <tbody id="kullaniciTablosu" class="divide-y divide-gray-700"></tbody>
                 </table>
@@ -64,12 +73,14 @@
         </section>
     </main>
 
-    <div id="qrModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl flex flex-col items-center">
+    <div id="qrModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-2xl flex flex-col items-center max-w-sm w-full">
             <h2 class="text-black font-bold text-xl mb-4" id="modalQrBaslik">QR Kod</h2>
-            <div id="qrcode" class="mb-6 p-4"></div>
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2 rounded-lg font-bold">Yazdır</button>
-            <button onclick="document.getElementById('qrModal').classList.add('hidden')" class="mt-4 text-gray-500">Kapat</button>
+            <div id="qrcode" class="mb-6 p-2 md:p-4 bg-white"></div>
+            <div class="flex gap-3 w-full">
+                <button onclick="document.getElementById('qrModal').classList.add('hidden')" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold">Kapat</button>
+                <button onclick="window.print()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold">Yazdır</button>
+            </div>
         </div>
     </div>
 
