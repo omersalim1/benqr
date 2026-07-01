@@ -10,7 +10,12 @@
 </head>
 <body class="bg-gray-950 min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl">
+    <div id="yukleniyorAnimasyonu" class="flex flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+        <p class="text-gray-400 text-sm font-medium tracking-wider animate-pulse">QR Kod Okunuyor...</p>
+    </div>
+
+    <div id="anaKart" class="hidden w-full max-w-sm bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl">
         
         <div class="text-center mb-6">
             <span class="text-[10px] uppercase tracking-widest text-gray-500 font-bold" id="qrKodEtiketi">KOD: YÜKLENİYOR...</span>
