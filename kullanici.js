@@ -186,55 +186,74 @@ async function silQr(qrId) {
     }
 }
 
-// --- QR KAMERA OKUMA İŞLEMLERİ ---
+// --- QR KAMERA OKUMA İŞLEMLERİ (MOBİL UYUMLU) ---
 
-let html5QrcodeScanner = null;
+let html5QrCode = null;
 
 function kameraAc() {
-    document.getElementById('kameraModal').classList.remove('hidden');
+    const modal = document.getElementById('kameraModal');
+    const loadingText = document.getElementById('kameraYukleniyorText');
+    modal.classList.remove('hidden');
     
-    // Tarayıcıyı başlat
-    html5QrcodeScanner = new Html5QrcodeScanner(
-        "qr-reader", 
-        { fps: 10, qrbox: { width: 250, height: 250 } }, 
-        false
-    );
-    
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    if (loadingText) loadingText.style.display = 'block';
+
+    // Kamerayı başlatmak için Html5Qrcode sınıfını kullanıyoruz
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("qr-reader");
+    }
+
+    // Mobilde "arka kamerayı" (environment) kullanmaya zorluyoruz
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        {
+            fps: 10,    // Saniyede 10 kare tara
+            qrbox: { width: 250, height: 250 }
+        },
+        onScanSuccess,
+        onScanFailure
+    ).then(() => {
+        // Kamera başarıyla açıldıysa yükleniyor yazısını gizle
+        if (loadingText) loadingText.style.display = 'none';
+    }).catch((err) => {
+        console.error("Kamera başlatılamadı:", err);
+        alert("Kamera açılamadı. Lütfen telefonunuzun tarayıcı ayarlarından (Chrome/Safari) siteye kamera izni verdiğinizden emin olun.");
+        kameraKapat();
+    });
 }
 
 function onScanSuccess(decodedText, decodedResult) {
     let qrId = decodedText;
     
-    // Eğer okunan QR kod senin sitenin linkini barındırıyorsa, içindeki id'yi cımbızla al
+    // Link içinden sadece ID'yi ayıkla
     if (decodedText.includes('?id=')) {
         try {
             const url = new URL(decodedText);
             qrId = url.searchParams.get("id");
         } catch(e) {
-            // URL olarak algılanmazsa manuel parçala
             qrId = decodedText.split('?id=')[1];
         }
     }
 
     if (qrId) {
         document.getElementById('qrIdInput').value = qrId.toUpperCase();
-        showToast("QR Kod başarıyla eklendi!", "success");
-        kameraKapat(); // İşlem bitince kamerayı kapat
+        showToast("QR Kod başarıyla okundu!", "success");
+        kameraKapat(); // Okuma başarılı olunca kamerayı kapat
     }
 }
 
 function onScanFailure(error) {
-    // Okuma başarısız olduğunda sistem sürekli burayı tetikler, görmezden geliyoruz.
-    // Kullanıcıya sürekli hata göstermemek için boş bırakıldı.
+    // Tarayıcı kodu görene kadar sürekli bu hatayı fırlatır, sessizce geçiyoruz.
 }
 
 function kameraKapat() {
     document.getElementById('kameraModal').classList.add('hidden');
-    // Eğer kamera aktifse, kapatıp hafızayı temizle
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().catch(error => {
-            console.error("Kamera durdurulamadı.", error);
+    
+    // Kamera açıksa durdur ve hafızadan temizle
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            html5QrCode.clear();
+        }).catch((err) => {
+            console.error("Kamera durdurulurken hata:", err);
         });
     }
 }
